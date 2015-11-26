@@ -14,12 +14,13 @@ def asignar_arma_doble(estrella, disparo):
     torreta.municion = municion_doble_bala
     estrella.eliminar()
     pilas.tareas.siempre(10, asignar_arma_simple)
-    pilas.avisar("municion x2")
+    pilas.avisar("Doble Municion")
 
 
 def eliminar_estrella(estrella):
     estrella.eliminar()
-
+def eliminar_aceituna(aceituna):
+    aceituna.eliminar()
 
 
 def crear_enemigo():
@@ -28,7 +29,7 @@ def crear_enemigo():
     x = random.randrange(-320, 320)
     y = random.randrange(-240, 240)
 
-   
+    # Hace que la aceituna aparezca gradualmente, aumentando de tamaño.
     enemigo.escala = 0
     pilas.utils.interpolar(enemigo, 'escala', 0.5, duracion=0.5, tipo='elastico')
 
@@ -71,7 +72,17 @@ def crear_enemigo():
 
             pilas.tareas.siempre(1, eliminar_estrella, estrella)
    
-       
+    if random.randrange(0, 20) > 5:
+        if issubclass(torreta.habilidades.DispararConClick.municion, municion_bala_simple):
+
+            aceituna = pilas.actores.Aceituna(x,y)
+            pilas.utils.interpolar(aceituna, 'escala', 0.5, duracion=0.5, tipo='elastico')
+
+            pilas.colisiones.agregar(aceituna,
+                                     torreta.habilidades.DispararConClick.proyectiles,
+                                     asignar_arma_doble)
+
+            pilas.tareas.siempre(1, eliminar_estrella, aceituna)       
 
     if fin_de_juego:
         return False
@@ -82,7 +93,7 @@ def crear_enemigo():
 def reducir_tiempo():
     global tiempo
     tiempo -= 1
-    pilas.avisar("Te queda poco tiempo!")
+    pilas.avisar("HURRY UP!!!")
     if tiempo < 1:
         tiempo = 0.5
 
@@ -134,30 +145,7 @@ torreta.radio_de_colision=20
 torreta.x=10
 torreta.aprender(pilas.habilidades.MoverseConElTeclado)
 torreta.aprender(pilas.habilidades.PuedeExplotarConHumo)
-pilas.tareas.siempre(0.7, crear_enemigo)
-
-
-aceituna1  = pilas.actores.Aceituna()
-aceituna1.x= 300
-aceituna1.x  = range (-400,250,30)*100
-
-aceituna2 = pilas.actores.Aceituna()
-aceituna2.x = 300
-aceituna2.y= 150
-aceituna2.x = [300,-400,300]*50
-
-aceituna3  = pilas.actores.Aceituna()
-aceituna3.x= 300
-aceituna3.y= -200
-aceituna3.x  = range (-150,250,30)*100
-
-def choque( aceituna, torreta):
-    torreta.eliminar()
-    pilas.avisar("Perdiste!")
-   
-pilas.colisiones.agregar(aceituna1, torreta, choque)  
-pilas.colisiones.agregar(aceituna2, torreta, choque)  
-pilas.colisiones.agregar(aceituna3, torreta, choque)  
+pilas.tareas.siempre(0.8, crear_enemigo)
 
 pilas.tareas.siempre(20, reducir_tiempo)
 
