@@ -1,0 +1,2 @@
+Para poder ejecutar el juego se necesita una IDE de Python, PyCharm, Ninja ide etc y la libreria Pilas Engine instalada.
+Tambien se puede ejecutar directamente desde el programa PilasEngine, arrastrando el archivo mi_juego.py al ide.
